@@ -11,13 +11,12 @@ FROM empleado;
 SENTENCIA */
 
 --INICIO BLOQUE ANÓNIMO
-
 VAR b_rut NUMBER
 EXEC :b_rut:=&RUT;
 VAR b_dvrut VARCHAR2
 EXEC :b_dvrut:='&dv_rut';
-VAR b_bonificacion NUMBER
-EXEC :b_bonificacion:=&bonificacion;
+VAR b_bonif NUMBER
+EXEC :b_bonif:=&bonif;
 
 --INICIO DEL DECLARE:
 DECLARE
@@ -29,8 +28,7 @@ v_sueldo EMPLEADO.sueldo_emp%TYPE;
 v_total_bono NUMBER(9);
 
 BEGIN
-    SELECT nombre_emp ||' '||appaterno_emp || ' '|| apmaterno_emp,
-       numrut_emp ||' '|| dvrut_emp,
+    SELECT nombre_emp,appaterno_emp, apmaterno_emp,
        sueldo_emp
 INTO v_nombre,
      v_appaterno,
@@ -41,7 +39,7 @@ WHERE numrut_emp = :b_rut
       AND dvrut_emp=:b_dvrut;
       
 --CÁLCULO BONIFICACIÓN:
-v_total_bono := (v_sueldo*:b_bonificacion)/100;
+v_total_bono := (v_sueldo*:b_bonif)/100;
 DBMS_OUTPUT.PUT_LINE('DATOS CALCULO BONIFICACION EXTRA DEL '||:b_bonif||'% DEL SUELDO');
 DBMS_OUTPUT.PUT_LINE('Nombre Empleado: '||v_nombre||' '||v_appaterno||' '||v_apmaterno);
 DBMS_OUTPUT.PUT_LINE('RUN: '||:b_rut||'-'||:b_dvrut);
@@ -82,8 +80,8 @@ v_est_civil ESTADI_CIVIL.desc_estcivil%TYPE;
 v_renta_cli CLIENTE.renta_cli%TYPE;
 
 BEGIN
-    SELECT nombre_cli||' '||appaterno_cli||' ' ||apmaterno_cli AS "Nombre Completo Cliente",
-       numrut_cli||' '||dvrut_cli AS "RUN CLIENTE",
+    SELECT nombre_cli, appaterno_cli,apmaterno_cli,
+       numrut_cli, dvrut_cli,
        ec.id_estcivil,
        ec.desc_estcivil,
        cli.renta_cli
@@ -108,3 +106,5 @@ CASE WHEN v_id_est_civil=3 AND v_renta_cli < :b_renta_min OR v_id_est_civil=4 AN
         DBMS_OUTPUT.PUT_LINE('Renta: '||TO_CHAR(v_renta_cli,'$999G999G999G999'));
 END CASE;
 END;
+
+/* CASO N°3 */
